@@ -22,9 +22,13 @@ void neo_blinky(void *pvParameters){
     uint32_t baseColor = strip.Color(0,0,0);
 
     while(1) {
-        if(xSemaphoreTake(xHumidSemaphore, portMAX_DELAY) == pdTRUE){
-            if(glob_humidity < 70) baseColor = strip.Color(0, 255, 0); // Set strip to green
-            else if(glob_humidity < 80) baseColor = strip.Color(255, 255, 0); // Set strip to yellow
+        if(xSemaphoreTake(xHumidSemaphore, pdMS_TO_TICKS(50)) == pdTRUE){
+            xSemaphoreTake(xDataMutex, portMAX_DELAY);
+            float humid = glob_humidity;
+            xSemaphoreGive(xDataMutex);
+
+            if(humid < 70) baseColor = strip.Color(0, 255, 0); // Set strip to green
+            else if(humid < 80) baseColor = strip.Color(255, 255, 0); // Set strip to yellow
             else baseColor = strip.Color(255, 0, 0); // Set strip to red
             strip.show();
         }

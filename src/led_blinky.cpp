@@ -5,15 +5,19 @@ void led_blinky(void *pvParameters){
   int prevTempState = NORMAL_TEMP;
   
   while(1) {   
-    if(xSemaphoreTake(xTempSemaphore, portMAX_DELAY) == pdTRUE){
+    if(xSemaphoreTake(xTempSemaphore, pdMS_TO_TICKS(50)) == pdTRUE){
       //Normal state: blinks every 1 second
       //Medium state: fast blink 3 times (when changed first time), then blinks every 500ms
       //High state: high for 3 seconds (when changed first time), then blinks every 200ms
 
+      xSemaphoreTake(xDataMutex, portMAX_DELAY);
+      float temp = glob_temperature;
+      xSemaphoreGive(xDataMutex);
+
       int curTempState;
 
-      if(glob_temperature < 25.0) curTempState = NORMAL_TEMP;
-      else if(glob_temperature < 30.0) curTempState = MED_TEMP;
+      if(temp < 25.0) curTempState = NORMAL_TEMP;
+      else if(temp < 30.0) curTempState = MED_TEMP;
       else curTempState = HIGH_TEMP;
 
       if(curTempState != prevTempState){

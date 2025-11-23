@@ -19,6 +19,7 @@
 extern SemaphoreHandle_t xTempSemaphore;
 extern SemaphoreHandle_t xHumidSemaphore;
 extern SemaphoreHandle_t xLCDSemaphore;
+extern SemaphoreHandle_t xDataMutex;
 
 extern float glob_temperature;
 extern float glob_humidity;

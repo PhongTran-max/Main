@@ -3,9 +3,6 @@
 DHT20 dht20;
 
 void dht_sensor(void *pvParameters){
-
-    Wire.begin(11, 12);
-    Serial.begin(115200);
     dht20.begin();
 
     while (1){
@@ -23,8 +20,10 @@ void dht_sensor(void *pvParameters){
             }
 
             //Update global variables for temperature and humidity
+            xSemaphoreTake(xDataMutex, portMAX_DELAY);
             glob_temperature = temperature;
             glob_humidity = humidity;
+            xSemaphoreGive(xDataMutex);
 
             xSemaphoreGive(xTempSemaphore);
             xSemaphoreGive(xHumidSemaphore);

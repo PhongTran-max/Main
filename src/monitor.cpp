@@ -16,7 +16,6 @@ void LCD_UpdateBuffer(float temp, float humid){
 }
 
 void LCD_task(void *pvParameters){
-    Serial.begin(115200);
     lcd.begin();
     lcd.backlight();
 
@@ -25,8 +24,13 @@ void LCD_task(void *pvParameters){
     int critRep = 0;
 
     while(1){
-        if(xSemaphoreTake(xLCDSemaphore, portMAX_DELAY) == pdTRUE){
-            LCD_UpdateBuffer(glob_temperature, glob_humidity);
+        if(xSemaphoreTake(xLCDSemaphore, pdMS_TO_TICKS(50)) == pdTRUE){
+            xSemaphoreTake(xDataMutex, portMAX_DELAY);
+            float temp = glob_temperature;
+            float humid = glob_humidity;
+            xSemaphoreGive(xDataMutex);
+
+            LCD_UpdateBuffer(temp, humid);
             lcd.clear();
 
             int lineA = curLine;
@@ -35,10 +39,10 @@ void LCD_task(void *pvParameters){
             if(strcmp(lcdBuffer[lineB], "!!!CRITICAL!!!") == 0){
                 if(critRep < 2){
                     lcd.setCursor(0, 0);
-                    lcd.print(lcdBuffer[lineA]);
+                    lcd.print(lcdBuffer[lineB]);
                     lcd.setCursor(0, 1);
                     lcd.print(lcdBuffer[lineB]);
-                    vTaskDelay(pdMS_TO_TICKS(500));
+                    vTaskDelay(pdMS_TO_TICKS(1000));
                     critRep++;
                     continue;
                 }
@@ -49,7 +53,7 @@ void LCD_task(void *pvParameters){
             lcd.print(lcdBuffer[lineA]);
             lcd.setCursor(0, 1);
             lcd.print(lcdBuffer[lineB]);
-            vTaskDelay(pdMS_TO_TICKS(500));
+            vTaskDelay(pdMS_TO_TICKS(1000));
 
             curLine = (curLine+1) % numLines;
         }

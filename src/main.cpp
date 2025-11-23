@@ -8,12 +8,11 @@
 
 void setup()
 {
-  Serial.begin(115200);
-
   //Create semaphors
   xTempSemaphore = xSemaphoreCreateBinary();
   xHumidSemaphore = xSemaphoreCreateBinary();
   xLCDSemaphore = xSemaphoreCreateBinary();
+  xDataMutex = xSemaphoreCreateMutex();
 
   // xSensorQueue = xQueueCreate(10, sizeof(SensorData_t));
 
