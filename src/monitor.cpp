@@ -6,9 +6,9 @@ void LCD_UpdateBuffer(float temp, float humid){
     snprintf(lcdBuffer[0], sizeof(lcdBuffer), "Temp: %.2fC", temp);
     snprintf(lcdBuffer[1], sizeof(lcdBuffer), "Humid: %.2f%", humid);
 
-    if(temp < 25){
+    if(temp <= 30){
         snprintf(lcdBuffer[2], sizeof(lcdBuffer), "State: Normal");
-    } else if(temp < 30){
+    } else if(temp <= 40){
         snprintf(lcdBuffer[2], sizeof(lcdBuffer), "State: Warning");
     } else{
         snprintf(lcdBuffer[2], sizeof(lcdBuffer), "!!!CRITICAL!!!");

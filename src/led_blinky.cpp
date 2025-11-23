@@ -16,8 +16,8 @@ void led_blinky(void *pvParameters){
 
       int curTempState;
 
-      if(temp < 25.0) curTempState = NORMAL_TEMP;
-      else if(temp < 30.0) curTempState = MED_TEMP;
+      if(temp <= 30.0) curTempState = NORMAL_TEMP;
+      else if(temp <= 40.0) curTempState = MED_TEMP;
       else curTempState = HIGH_TEMP;
 
       if(curTempState != prevTempState){
