@@ -8,6 +8,8 @@
 
 void setup()
 {
+  Serial.begin(115200);
+  Wire.begin(11,12);
   //Create semaphors
   xTempSemaphore = xSemaphoreCreateBinary();
   xHumidSemaphore = xSemaphoreCreateBinary();
