@@ -21,8 +21,6 @@ void temp_humi_monitor(void *pvParameters){
     Wire.begin(11, 12);
     Serial.begin(115200);
     dht20.begin();
-    lcd.begin();
-    lcd.backlight();
 
     while (1){
         if(dht20.read()){
