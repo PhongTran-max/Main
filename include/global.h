@@ -16,9 +16,6 @@
 #define LED_COUNT       1
 #define BREATHING_DELAY 20
 
-extern SemaphoreHandle_t xTempSemaphore;
-extern SemaphoreHandle_t xHumidSemaphore;
-extern SemaphoreHandle_t xLCDSemaphore;
 extern SemaphoreHandle_t xDataMutex;
 extern SemaphoreHandle_t xI2CMutex;
 

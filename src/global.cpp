@@ -1,8 +1,5 @@
 #include "global.h"
 
-SemaphoreHandle_t xTempSemaphore;
-SemaphoreHandle_t xHumidSemaphore;
-SemaphoreHandle_t xLCDSemaphore;
 SemaphoreHandle_t xDataMutex;
 SemaphoreHandle_t xI2CMutex;
 

@@ -24,42 +24,40 @@ void LCD_task(void *pvParameters){
     int critRep = 0;
 
     while(1){
-        if(xSemaphoreTake(xLCDSemaphore, portMAX_DELAY) == pdTRUE){
-            xSemaphoreTake(xDataMutex, portMAX_DELAY);
-            float temp = glob_temperature;
-            float humid = glob_humidity;
-            xSemaphoreGive(xDataMutex);
+        xSemaphoreTake(xDataMutex, portMAX_DELAY);
+        float temp = glob_temperature;
+        float humid = glob_humidity;
+        xSemaphoreGive(xDataMutex);
 
-            LCD_UpdateBuffer(temp, humid);
+        LCD_UpdateBuffer(temp, humid);
 
-            xSemaphoreTake(xI2CMutex, portMAX_DELAY);
-            lcd.clear();
+        xSemaphoreTake(xI2CMutex, portMAX_DELAY);
+        lcd.clear();
 
-            int lineA = curLine;
-            int lineB = (curLine+1) % numLines;
+        int lineA = curLine;
+        int lineB = (curLine+1) % numLines;
 
-            if(strcmp(lcdBuffer[lineA], " !!!CRITICAL!!!") == 0){
-                if(critRep < 2){
-                    lcd.setCursor(0, 0);
-                    lcd.print(lcdBuffer[lineA]);
-                    lcd.setCursor(0, 1);
-                    lcd.print(lcdBuffer[lineA]);
-                    critRep++;
-                    xSemaphoreGive(xI2CMutex);
-                    vTaskDelay(1000);
-                    continue;
-                }
-                critRep = 0;
+        if(strcmp(lcdBuffer[lineA], " !!!CRITICAL!!!") == 0){
+            if(critRep < 2){
+                lcd.setCursor(0, 0);
+                lcd.print(lcdBuffer[lineA]);
+                lcd.setCursor(0, 1);
+                lcd.print(lcdBuffer[lineA]);
+                critRep++;
+                xSemaphoreGive(xI2CMutex);
+                vTaskDelay(1000);
+                continue;
             }
-
-            lcd.setCursor(0, 0);
-            lcd.print(lcdBuffer[lineA]);
-            lcd.setCursor(0, 1);
-            lcd.print(lcdBuffer[lineB]);
-            xSemaphoreGive(xI2CMutex);
-
-            curLine = (curLine+1) % numLines;
-            vTaskDelay(1000);
+            critRep = 0;
         }
+
+        lcd.setCursor(0, 0);
+        lcd.print(lcdBuffer[lineA]);
+        lcd.setCursor(0, 1);
+        lcd.print(lcdBuffer[lineB]);
+        xSemaphoreGive(xI2CMutex);
+
+        curLine = (curLine+1) % numLines;
+        vTaskDelay(1000);
     }
 }
