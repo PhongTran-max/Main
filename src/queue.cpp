@@ -31,7 +31,7 @@ void ProcessTask(void *pvParameters) {
         {
             if (recv.temperature > 30.0)
             {
-                Serial.print("[CẢNH BÁO] Nhiệt độ cao: ");
+                Serial.print("[Warning] High temperature: ");
                 Serial.print(recv.temperature);
                 Serial.print("°C (ID=");
                 Serial.print(recv.sample_id);
@@ -47,6 +47,7 @@ void ProcessTask(void *pvParameters) {
                 Serial.print(recv.sample_id);
                 Serial.println(")");
             }
+            vTaskDelay(pdMS_TO_TICKS(1000));
         }
     }
 }
