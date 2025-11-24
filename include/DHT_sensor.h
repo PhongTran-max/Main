@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "DHT20.h"
 #include "global.h"
+#include <Wire.h>
 
 void dht_sensor(void *pvParameters);
 

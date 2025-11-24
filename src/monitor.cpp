@@ -4,14 +4,14 @@ LiquidCrystal_I2C lcd(33,16,2);
 
 void LCD_UpdateBuffer(float temp, float humid){
     snprintf(lcdBuffer[0], sizeof(lcdBuffer), "Temp: %.2fC", temp);
-    snprintf(lcdBuffer[1], sizeof(lcdBuffer), "Humid: %.2f%", humid);
+    snprintf(lcdBuffer[1], sizeof(lcdBuffer), "Humid: %.2f%%", humid);
 
     if(temp <= 30){
         snprintf(lcdBuffer[2], sizeof(lcdBuffer), "State: Normal");
     } else if(temp <= 40){
         snprintf(lcdBuffer[2], sizeof(lcdBuffer), "State: Warning");
     } else{
-        snprintf(lcdBuffer[2], sizeof(lcdBuffer), "!!!CRITICAL!!!");
+        snprintf(lcdBuffer[2], sizeof(lcdBuffer), " !!!CRITICAL!!!");
     }
 }
 
@@ -24,26 +24,29 @@ void LCD_task(void *pvParameters){
     int critRep = 0;
 
     while(1){
-        if(xSemaphoreTake(xLCDSemaphore, pdMS_TO_TICKS(50)) == pdTRUE){
+        if(xSemaphoreTake(xLCDSemaphore, portMAX_DELAY) == pdTRUE){
             xSemaphoreTake(xDataMutex, portMAX_DELAY);
             float temp = glob_temperature;
             float humid = glob_humidity;
             xSemaphoreGive(xDataMutex);
 
             LCD_UpdateBuffer(temp, humid);
+
+            xSemaphoreTake(xI2CMutex, portMAX_DELAY);
             lcd.clear();
 
             int lineA = curLine;
             int lineB = (curLine+1) % numLines;
 
-            if(strcmp(lcdBuffer[lineB], "!!!CRITICAL!!!") == 0){
+            if(strcmp(lcdBuffer[lineA], " !!!CRITICAL!!!") == 0){
                 if(critRep < 2){
                     lcd.setCursor(0, 0);
-                    lcd.print(lcdBuffer[lineB]);
+                    lcd.print(lcdBuffer[lineA]);
                     lcd.setCursor(0, 1);
-                    lcd.print(lcdBuffer[lineB]);
-                    vTaskDelay(pdMS_TO_TICKS(1000));
+                    lcd.print(lcdBuffer[lineA]);
                     critRep++;
+                    xSemaphoreGive(xI2CMutex);
+                    vTaskDelay(1000);
                     continue;
                 }
                 critRep = 0;
@@ -53,9 +56,10 @@ void LCD_task(void *pvParameters){
             lcd.print(lcdBuffer[lineA]);
             lcd.setCursor(0, 1);
             lcd.print(lcdBuffer[lineB]);
-            vTaskDelay(pdMS_TO_TICKS(1000));
+            xSemaphoreGive(xI2CMutex);
 
             curLine = (curLine+1) % numLines;
+            vTaskDelay(1000);
         }
     }
 }
