@@ -17,11 +17,11 @@ void setup()
   xSensorQueue = xQueueCreate(10, sizeof(SensorData_t));
 
   // xTaskCreate(led_blinky, "Task LED Blink", 2048, NULL, 2, NULL);
-  // xTaskCreate(neo_blinky, "Task NEO Blink", 2048, NULL, 2, NULL);
+  xTaskCreate(neo_blinky, "Task NEO Blink", 2048, NULL, 2, NULL);
   // xTaskCreate(dht_sensor, "DHT Sensor", 2048, NULL, 2, NULL);
   // xTaskCreate(LCD_task, "LCD Task", 2048, NULL, 2, NULL);
-  xTaskCreate(ValueTask, "Value Task", 2048, NULL, 2, NULL);
-  xTaskCreate(ProcessTask, "Process Task", 2048, NULL, 2, NULL);
+  // xTaskCreate(ValueTask, "Value Task", 2048, NULL, 2, NULL);
+  // xTaskCreate(ProcessTask, "Process Task", 2048, NULL, 2, NULL);
 }
 
 void loop()
