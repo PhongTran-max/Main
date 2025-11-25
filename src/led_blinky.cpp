@@ -9,6 +9,15 @@ void led_blinky(void *pvParameters){
     //Medium state: fast blink 3 times (when changed first time), then blinks every 500ms
     //High state: high for 3 seconds (when changed first time), then blinks every 200ms
 
+    if(xSemaphoreTake(xButtonSemaphore, portMAX_DELAY) == pdTRUE){
+      for(int i=0; i<5; ++i){
+        digitalWrite(LED_GPIO, HIGH);
+        vTaskDelay(50);
+        digitalWrite(LED_GPIO, LOW);
+        vTaskDelay(50);
+      }
+    }
+
     xSemaphoreTake(xDataMutex, portMAX_DELAY);
     float temp = glob_temperature;
     xSemaphoreGive(xDataMutex);

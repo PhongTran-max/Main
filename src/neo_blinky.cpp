@@ -39,38 +39,48 @@ void neo_blinky(void *pvParameters){
     strip.clear();
     strip.show();
 
-    // uint32_t baseColor = strip.Color(0,0,0);
+    uint32_t baseColor = strip.Color(0,0,0);
 
     float hue = 0;
 
     while(1) {
-        // xSemaphoreTake(xDataMutex, portMAX_DELAY);
-        // float humid = glob_humidity;
-        // xSemaphoreGive(xDataMutex);
-
-        // if(humid < 70) baseColor = strip.Color(0, 255, 0); // Set strip to green
-        // else if(humid < 80) baseColor = strip.Color(255, 255, 0); // Set strip to yellow
-        // else baseColor = strip.Color(255, 0, 0); // Set strip to red
-        // strip.show();
+        xSemaphoreTake(xDataMutex, portMAX_DELAY);
+        float humid = glob_humidity;
+        xSemaphoreGive(xDataMutex);
+        switch(neo_status){
+            case 0:
+                if(humid < 70) baseColor = strip.Color(0, 255, 0); // Set strip to green
+                else if(humid < 80) baseColor = strip.Color(255, 255, 0); // Set strip to yellow
+                else baseColor = strip.Color(255, 0, 0); // Set strip to red
+                strip.show();
         
-        // for(float b=0; b<=1; b+=0.05){
-        //     strip.setPixelColor(0, scaleColor(baseColor, b));
-        //     strip.show();
-        //     vTaskDelay(BREATHING_DELAY);
-        // }
-        // for(float b=1; b>=0; b-=0.05){
-        //     strip.setPixelColor(0, scaleColor(baseColor, b));
-        //     strip.show();
-        //     vTaskDelay(BREATHING_DELAY);
-        // }
-
-        strip.setPixelColor(0, rainbow(hue, 1.0, 1.0));
-        strip.show();
-
-        hue += 0.01;
-        if(hue > 1) hue = 0;
-
-        // Delay dựa trên tốc độ
-        vTaskDelay(pdMS_TO_TICKS(20));
+                for(float b=0; b<=1; b+=0.05){
+                    strip.setPixelColor(0, scaleColor(baseColor, b));
+                    strip.show();
+                    vTaskDelay(BREATHING_DELAY);
+                }
+                for(float b=1; b>=0; b-=0.05){
+                    strip.setPixelColor(0, scaleColor(baseColor, b));
+                    strip.show();
+                    vTaskDelay(BREATHING_DELAY);
+                }
+                break;
+            case 1:
+                strip.setPixelColor(0, rainbow(hue, 1.0, 1.0));
+                strip.show();
+                hue += 0.01;
+                if(hue > 1) hue = 0;
+                vTaskDelay(pdMS_TO_TICKS(100));
+                break;
+            case 2:
+                strip.setPixelColor(0, rainbow(hue, 1.0, 1.0));
+                strip.show();
+                hue += 0.01;
+                if(hue > 1) hue = 0;
+                vTaskDelay(pdMS_TO_TICKS(20));
+                break;
+            default:
+                break;
+        }
     }
 }

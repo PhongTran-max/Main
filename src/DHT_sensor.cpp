@@ -10,8 +10,8 @@ void dht_sensor(void *pvParameters){
 
         if(xSemaphoreTake(xI2CMutex, portMAX_DELAY)){
             if(dht20.read()==0){
-                temperature = dht20.getTemperature();
-                humidity = dht20.getHumidity();
+                temperature = 33;
+                humidity = 33;
             }
             xSemaphoreGive(xI2CMutex);
         }

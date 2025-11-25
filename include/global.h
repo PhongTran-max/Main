@@ -16,10 +16,15 @@
 #define LED_COUNT       1
 #define BREATHING_DELAY 20
 
+#define BUTTON          GPIO_NUM_0
+
+extern SemaphoreHandle_t xButtonSemaphore;
 extern SemaphoreHandle_t xDataMutex;
 extern SemaphoreHandle_t xI2CMutex;
 
 extern float glob_temperature;
 extern float glob_humidity;
 extern char lcdBuffer[3][16];
+extern int neo_status;
+
 #endif
