@@ -7,12 +7,10 @@
 typedef struct {
     float temperature;
     float humidity;
-    int sample_id;
 } SensorData_t;
 
 extern QueueHandle_t xSensorQueue;
 
-void ValueTask(void *pvParameters);
-void ProcessTask(void *pvParameters);
+void PrintSerialTask(void *pvParameters);
 
 #endif
