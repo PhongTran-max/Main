@@ -6,5 +6,4 @@
 
 void neo_blinky(void *pvParameters);
 
-
 #endif

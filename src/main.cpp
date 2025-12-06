@@ -20,7 +20,7 @@ void setup()
   xTaskCreate(led_blinky, "Task LED Blink", 2048, NULL, 2, NULL);
   xTaskCreate(neo_blinky, "Task NEO Blink", 2048, NULL, 2, NULL);
   xTaskCreate(dht_sensor, "DHT Sensor", 2048, NULL, 2, NULL);
-  xTaskCreate(LCD_task, "LCD Task", 2048, NULL, 2, NULL);
+  // xTaskCreate(LCD_task, "LCD Task", 2048, NULL, 2, NULL);
   xTaskCreate(getKeyButton, "Button Task", 2048, NULL, 2, NULL);
   xTaskCreate(PrintSerialTask, "Serial Task", 2048, NULL, 2, NULL);
 }
